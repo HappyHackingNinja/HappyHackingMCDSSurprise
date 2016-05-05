@@ -1,0 +1,2 @@
+# HappyHackingMCDSSurprise
+為懶惰的人所準備的早安鬧鐘優惠領取腳本
