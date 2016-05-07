@@ -61,3 +61,5 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 .idea/workspace.xml
+hhmcds/gmail-python-quickstart.json
+hhmcds/client_secret.json
