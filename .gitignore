@@ -63,3 +63,7 @@ target/
 .idea/workspace.xml
 hhmcds/gmail-python-quickstart.json
 hhmcds/client_secret.json
+tests/client_secret.json
+hhmcds/saved_credentials.json
+*.xlsx
+tests/saved_credentials.json

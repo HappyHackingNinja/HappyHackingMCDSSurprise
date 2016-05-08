@@ -10,6 +10,9 @@ class 早安鬧鐘資料(object):
         self.識別碼 = None
         self.金鑰 = None
         self.鬧鐘時間 = None
+        self.註冊成功 = False
+        self.抽獎成功 = False
+        self.抽獎結果 = None
         self.對應版本 = "2.5.0"
 
     def 更新鬧鐘時間(self):

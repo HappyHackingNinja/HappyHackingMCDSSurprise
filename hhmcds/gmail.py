@@ -2,11 +2,12 @@ import httplib2
 import os
 import base64
 
-from apiclient import discovery
+from apiclient import discovery, errors
 import oauth2client
 from oauth2client import client
 from oauth2client import tools
 
+import sys
 
 try:
     import argparse
@@ -16,9 +17,10 @@ except ImportError:
 
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/gmail-python-quickstart.json
-SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
+SCOPES = 'https://mail.google.com/'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Gmail API Python Quickstart'
+SAVED_CREDENTIALS = 'saved_credentials.json'
 
 
 def get_credentials():
@@ -30,9 +32,8 @@ def get_credentials():
     Returns:
         Credentials, the obtained credential.
     """
-    if not os.path.exists('gmail-python-quickstart.json'):
-        print('qq')
-    credential_path = os.path.join('gmail-python-quickstart.json')
+    credential_path = os.path.join(SAVED_CREDENTIALS)
+    print(credential_path)
 
     store = oauth2client.file.Storage(credential_path)
     credentials = store.get()
@@ -46,19 +47,16 @@ def get_credentials():
         print('Storing credentials to ' + credential_path)
     return credentials
 
-def main():
-    """Shows basic usage of the Gmail API.
 
-    Creates a Gmail API service object and outputs a list of label names
-    of the user's Gmail account.
-    """
+def active_then_delete():
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('gmail', 'v1', http=http)
 
-    list_results = service.users().messages().list(userId='me', q='from:no-reply@mcdonaldssurprise.com is:unread').execute()
+    list_results = service.users().messages().list(userId='me', q='from:no-reply@mcdonaldssurprise.com').execute()
     messages = list_results.get('messages', [])
 
+    http = httplib2.Http()
     if not messages:
         print('No messages found.')
     else:
@@ -66,9 +64,21 @@ def main():
         for message in messages:
             get_results = service.users().messages().get(userId='me', id=message['id']).execute()
             payload = get_results.get('payload', [])
+            email = 'me'
+            for header in payload['headers']:
+                if header['name'] == 'Delivered-To':
+                    email = header['value']
+                    continue
             body_data = base64.b64decode(payload['body']['data'].replace('-', '+').replace('_', '/')).decode("utf-8")
             if "https://iw2.mcdonaldssurprise.com/account/activate?token=" in body_data:
-                print(body_data[body_data.find('"') + 1: body_data.find('"', body_data.find('https'))])
+                url_activate = body_data[body_data.find('"') + 1: body_data.find('"', body_data.find('https'))]
+                resp, content = http.request(url_activate)
+                # print(message['id'], email, resp, content)
+                try:
+                    service.users().messages().delete(userId='me', id=message['id']).execute()
+                    sys.stdout.write("帳號: {} 已繳活且刪除其郵件\n\n".format(email))
+                except errors.HttpError as error:
+                    print('An error occurred: {}'.format(error))
 
 if __name__ == '__main__':
-    main()
+    active_then_delete()
