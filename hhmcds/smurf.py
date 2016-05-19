@@ -28,18 +28,17 @@ class MCDSSurpriseSmurf(object):
             "dob": "0",
             "gender": "-1"
         }
-        sys.stdout.write("結果...{}\n".format(註冊資料))
+        sys.stdout.write("註冊信箱: {}\n".format(self.資料.信箱))
         響應 = requests.post(註冊網址, data=註冊資料)
         JSON響應 = 響應.json()
 
         if JSON響應['error'] == 0:
-            sys.stdout.write("結果...{}\n".format(JSON響應))
             sys.stdout.write("註冊成功\n")
             return True
         elif JSON響應['error'] == 1:
             sys.stderr.write("此帳號已被註冊\n")
         else:
-            sys.stdout.write("結果...{}\n".format(JSON響應))
+            sys.stdout.write("非預期狀況: {}\n".format(JSON響應))
             sys.stderr.write("註冊失敗\n")
 
 if __name__ == "__main__":

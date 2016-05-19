@@ -54,12 +54,12 @@ def 創建分身(gmail, password, mail_prefix, numbers):
 
 
 def 測試程式(gmail, password, mail_prefix="", numbers=100):
-    # 創建分身(gmail, password, mail_prefix, numbers)
-    # sys.stdout.write("分身創建完成，等待一分鐘後開始繳活\n\n")
-    # time.sleep(30)
-    # active_then_delete()
+    創建分身(gmail, password, mail_prefix, numbers)
+    sys.stdout.write("分身創建完成，等待五分鐘後開始繳活\n\n")
+    time.sleep(300)
+    active_then_delete()
     抽獎(gmail, password, mail_prefix, numbers)
 
 if __name__ == "__main__":
-    mail_prefix = "".format(datetime.datetime.now())
+    mail_prefix = "{:%m%d}".format(datetime.datetime.now())
     測試程式(gmail="imkevinchen", password="md1234", mail_prefix=mail_prefix, numbers=100)
