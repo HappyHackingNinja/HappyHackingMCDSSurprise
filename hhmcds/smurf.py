@@ -8,7 +8,7 @@ from hhmcds.model import 早安鬧鐘資料
 註冊網址 = "http://iw2.mcdonaldssurprise.com/account/register"
 
 
-class MCDSSurpriseSmurf(object):
+class 分身(object):
 
     def __init__(self, 資料):
         if not isinstance(資料, 早安鬧鐘資料):
@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     data = 早安鬧鐘資料(args.user, args.password, args.device)
 
-    mss = MCDSSurpriseSmurf(data)
+    mss = 分身(data)
     if mss.執行():
         sys.stdout.write("程序執行完成\n")
         sys.exit(0)

@@ -14,7 +14,7 @@ from hhmcds.model import 早安鬧鐘資料
 CDN網址 = "http://cdn.mcdonaldssurprise.com/prizes/images/"
 
 
-class HappyHackingMCDSSurprise(object):
+class 抽獎(object):
 
     標題字典 = {
         "Buy EVM get 4 nuggets": "買超值全餐送四塊麥克鷄塊",
@@ -31,8 +31,9 @@ class HappyHackingMCDSSurprise(object):
         "Free Small Fries": "請我吃小薯",
         "SCF ALC BOGO": "勁辣鷄腿堡買一送一",
         "Buy $38 Drink Get Free SCF for free": "買任一大杯冷飲送勁辣鷄腿堡",
-        "McFlurry 2nd item half price": "冰炫風單點第二杯半價（限同口味）"
-
+        "McFlurry 2nd item half price": "冰炫風單點第二杯半價（限同口味）",
+        "Free 8oz hot coffee (new #367)": "請我吃喝熱咖啡",
+        "ALC $75 Egg Benedict Platter":  "班尼迪克雙蛋大早餐單點75元"
     }
 
     def __init__(self, 資料):
@@ -124,8 +125,8 @@ class HappyHackingMCDSSurprise(object):
             # sys.stdout.write("雞湯分享: {}\n".format(JSON響應['winnerPrize']['shareText']))
         elif JSON響應['winnerPrize']['prizeType'] is '1':
             sys.stdout.write("噫！好了！我中了！\n")
-            if JSON響應['winnerPrize']['title'] in HappyHackingMCDSSurprise.標題字典:
-                self.資料.抽獎結果 = HappyHackingMCDSSurprise.標題字典[JSON響應['winnerPrize']['title']]
+            if JSON響應['winnerPrize']['title'] in 抽獎.標題字典:
+                self.資料.抽獎結果 = 抽獎.標題字典[JSON響應['winnerPrize']['title']]
             else:
                 self.資料.抽獎結果 = JSON響應['winnerPrize']['title']
             sys.stdout.write("標題: {}\n".format(self.資料.抽獎結果))
@@ -151,7 +152,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     data = 早安鬧鐘資料(args.user, args.password, args.device)
-    hhmd = HappyHackingMCDSSurprise(data)
+    hhmd = 抽獎(data)
     if hhmd.執行().抽獎結果:
         sys.stdout.write("程序執行完成\n")
         sys.exit(0)
