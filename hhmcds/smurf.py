@@ -8,7 +8,7 @@ from hhmcds.model import 早安鬧鐘資料
 註冊網址 = "http://iw2.mcdonaldssurprise.com/account/register"
 
 
-class MCDSSurpriseSmurf(object):
+class 分身(object):
 
     def __init__(self, 資料):
         if not isinstance(資料, 早安鬧鐘資料):
@@ -28,18 +28,17 @@ class MCDSSurpriseSmurf(object):
             "dob": "0",
             "gender": "-1"
         }
-        sys.stdout.write("結果...{}\n".format(註冊資料))
+        sys.stdout.write("註冊信箱: {}\n".format(self.資料.信箱))
         響應 = requests.post(註冊網址, data=註冊資料)
         JSON響應 = 響應.json()
 
         if JSON響應['error'] == 0:
-            sys.stdout.write("結果...{}\n".format(JSON響應))
             sys.stdout.write("註冊成功\n")
             return True
         elif JSON響應['error'] == 1:
             sys.stderr.write("此帳號已被註冊\n")
         else:
-            sys.stdout.write("結果...{}\n".format(JSON響應))
+            sys.stdout.write("非預期狀況: {}\n".format(JSON響應))
             sys.stderr.write("註冊失敗\n")
 
 if __name__ == "__main__":
@@ -51,7 +50,7 @@ if __name__ == "__main__":
 
     data = 早安鬧鐘資料(args.user, args.password, args.device)
 
-    mss = MCDSSurpriseSmurf(data)
+    mss = 分身(data)
     if mss.執行():
         sys.stdout.write("程序執行完成\n")
         sys.exit(0)

@@ -14,7 +14,7 @@ from hhmcds.model import 早安鬧鐘資料
 CDN網址 = "http://cdn.mcdonaldssurprise.com/prizes/images/"
 
 
-class HappyHackingMCDSSurprise(object):
+class 抽獎(object):
 
     標題字典 = {
         "Buy EVM get 4 nuggets": "買超值全餐送四塊麥克鷄塊",
@@ -28,6 +28,12 @@ class HappyHackingMCDSSurprise(object):
         "Matcha Red Bean Sundae $30": "抹茶紅豆花聖代單點30元",
         "Buy SCF EVM get SCF ALC": "買勁辣鷄腿堡餐送勁辣鷄腿堡",
         "Buy $38 drink get FOF for free": "買任一大杯冷飲送麥香魚",
+        "Free Small Fries": "請我吃小薯",
+        "SCF ALC BOGO": "勁辣鷄腿堡買一送一",
+        "Buy $38 Drink Get Free SCF for free": "買任一大杯冷飲送勁辣鷄腿堡",
+        "McFlurry 2nd item half price": "冰炫風單點第二杯半價（限同口味）",
+        "Free 8oz hot coffee (new #367)": "請我吃喝熱咖啡",
+        "ALC $75 Egg Benedict Platter":  "班尼迪克雙蛋大早餐單點75元"
     }
 
     def __init__(self, 資料):
@@ -38,8 +44,8 @@ class HappyHackingMCDSSurprise(object):
     def 執行(self):
         if self.登入():
             if self.設置鬧鐘() and self.等待鬧鐘():
-                if self.領取驚喜():
-                    return True
+                self.領取驚喜()
+        return self.資料
 
     def 登入(self):
         登入資料 = {
@@ -102,6 +108,7 @@ class HappyHackingMCDSSurprise(object):
         響應 = requests.post(領取驚喜網址, data=領取驚喜資料)
         JSON響應 = 響應.json()
         if JSON響應['error'] is 0:
+            self.資料.抽獎成功 = True
             sys.stdout.write("領取成功，分析結果...{}\n".format(JSON響應))
             return self.分析結果(JSON響應)
         else:
@@ -111,16 +118,18 @@ class HappyHackingMCDSSurprise(object):
 
     def 分析結果(self, JSON響應):
         if JSON響應['winnerPrize']['prizeType'] is '0':
+            self.資料.抽獎結果 = "雞湯圖片"
             sys.stdout.write("該死的畜生！你中了甚麼？\n")
             sys.stdout.write("標題: {}\n".format(JSON響應['winnerPrize']['title']))
             sys.stdout.write("雞湯圖片: {}\n".format(parse.urljoin(CDN網址, JSON響應['winnerPrize']['alarmImage320'])))
             # sys.stdout.write("雞湯分享: {}\n".format(JSON響應['winnerPrize']['shareText']))
         elif JSON響應['winnerPrize']['prizeType'] is '1':
             sys.stdout.write("噫！好了！我中了！\n")
-            if JSON響應['winnerPrize']['title'] in HappyHackingMCDSSurprise.標題字典:
-                sys.stdout.write("標題: {}\n".format(HappyHackingMCDSSurprise.標題字典[JSON響應['winnerPrize']['title']]))
+            if JSON響應['winnerPrize']['title'] in 抽獎.標題字典:
+                self.資料.抽獎結果 = 抽獎.標題字典[JSON響應['winnerPrize']['title']]
             else:
-                sys.stdout.write("標題: {}\n".format(JSON響應['winnerPrize']['title']))
+                self.資料.抽獎結果 = JSON響應['winnerPrize']['title']
+            sys.stdout.write("標題: {}\n".format(self.資料.抽獎結果))
             sys.stdout.write("優惠圖片: {}\n".format(parse.urljoin(CDN網址, JSON響應['winnerPrize']['offerImage'])))
             sys.stdout.write("產品圖片: {}\n".format(parse.urljoin(CDN網址, JSON響應['winnerPrize']['productImage'])))
             # sys.stdout.write("分享訊息: {}\n".format(JSON響應['winnerPrize']['shareText']))
@@ -143,8 +152,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     data = 早安鬧鐘資料(args.user, args.password, args.device)
-    hhmd = HappyHackingMCDSSurprise(data)
-    if hhmd.執行():
+    hhmd = 抽獎(data)
+    if hhmd.執行().抽獎結果:
         sys.stdout.write("程序執行完成\n")
         sys.exit(0)
     else:
